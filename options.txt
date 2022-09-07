@@ -1,0 +1,7 @@
+Por padrão a sorte aleatoria é normal, escolha como deseja seu jogo!
+obs:Perceba que alterar essa configuração acaba alterando a experiencia da sua aventura!
+Grande sorte trará maiores chances de acertos
+Pequena sorte lhe trará menos beneficios e deixara o jogo com maiores dificuldades
+Você realmente desja fazer alteração?
+1 - Sim
+2 - Não 

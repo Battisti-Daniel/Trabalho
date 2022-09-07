@@ -1,0 +1,9 @@
+flechaRecuo
+flechaJazida
+flechaIncoveniente
+olhoDeMorcego
+flechaImpactante
+torpez
+frascoMolotov
+periciaArco
+divindade

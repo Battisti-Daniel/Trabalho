@@ -1,0 +1,4 @@
+1 - Tomar uma bebida
+2 - Conversar com o taberneiro
+3 - Sentar na mesa
+4 - Evoluir caracteristicas

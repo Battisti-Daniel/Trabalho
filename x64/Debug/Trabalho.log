@@ -1,0 +1,7 @@
+﻿  Trabalho.cpp
+C:\Users\danie\Source\Repos\Trabalho\Trabalho\Trabalho.h(1050,29): warning C4129: ' ': sequência de escape de caractere não reconhecida
+C:\Users\danie\Source\Repos\Trabalho\Trabalho\Trabalho.h(1108,25): warning C4129: ' ': sequência de escape de caractere não reconhecida
+C:\Users\danie\Source\Repos\Trabalho\Trabalho\Trabalho.cpp(10,15): warning C4244: 'argumento': conversão de 'time_t' para 'unsigned int', possível perda de dados
+C:\Users\danie\Source\Repos\Trabalho\Trabalho\Trabalho.cpp(13,9): warning C4101: 'm': variável local não referenciada
+C:\Users\danie\Source\Repos\Trabalho\Trabalho\Trabalho.h(103): warning C4715: 'option': nem todos os caminhos de controle retornam um valor
+  Trabalho.vcxproj -> C:\Users\danie\Source\Repos\Trabalho\x64\Debug\Trabalho.exe

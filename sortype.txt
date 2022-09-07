@@ -1,0 +1,4 @@
+1 - Sorte Grande
+2 - Sorte Normal
+3 - Sorte Pequena
+Escolha a opção
