@@ -5,29 +5,31 @@ using namespace std;
 #include <stdlib.h>
 #include<time.h>
 
-struct defaultOptions 
+struct defaultOptions
 {
-    int pos[1];
-    int rlucky = 2, mortes = 0, moedas = 5 , taberneirocount = 0;
-    bool start = false,live = true, save = false, ladina = true, taberneiro = false;
+    int pos = 0, dia = 0;
+    int rlucky = 2, mortes = 0, moedas = 120, taberneirocount = 0;
+    int weapon = 0,exppoints = 1000, healfix = 0;
+    bool start = false, live = true, save = false, ladina = true, taberneiro = false, going = false, taberneirof = false, ladinaf = false;
     string classe;
+    int ursos = 10, treantes = 5, mimicos = 2, boss = 1;
 };
 
 void lobby()
 {
-        system("cls");
-        ifstream lobbytext;
-        string phrase;
-        lobbytext.open("lobby.txt");
-        while (lobbytext.eof() == false)
-        {
-            getline(lobbytext, phrase);
-            cout << phrase << "\n";
+    system("cls");
+    ifstream lobbytext;
+    string phrase;
+    lobbytext.open("lobby.txt");
+    while (lobbytext.eof() == false)
+    {
+        getline(lobbytext, phrase);
+        cout << phrase << "\n";
     }
-        lobbytext.close();
+    lobbytext.close();
 }
 
-int option(defaultOptions &d)
+int option(defaultOptions& d)
 {
     int value = 0;
     while (value < 1 or value > 4)
@@ -38,12 +40,12 @@ int option(defaultOptions &d)
 
     switch (value)
     {
-        
+
     case 4:
     {
         exit(0);
         break;
-        }
+    }
 
     case 3:
     {
@@ -100,46 +102,46 @@ int option(defaultOptions &d)
     default:
         option(d);
     }
-}   
+}
 
-struct features 
+struct features
 {
-    int hp = 0, luck = 0, str = 0, inte = 0, exppoints = 10, classe;
+    int hp = 0, luck = 0, str = 0, inte = 0, classe;
     string name;
 };
 
-void doFeatures(features &f, defaultOptions &d)
+void doFeatures(features& f, defaultOptions& d)
 {
     system("cls");
-    int confirm = -1;
-    cout << "Qual é mesmo o seu nome? \n";
+    int confirm = 0;
+    cout << "Qual Ã© mesmo o seu nome? \n";
     cout << "Seu nome: ";
     cin >> f.name;
     do
     {
         system("cls");
-        cout << "Entendo, seu nome é " << f.name << " isso mesmo? \n\n";
-        cout << "1 - Acenar com a cabeça que sim \t 2 - Tentar lembrar do nome \n";
+        cout << "Entendo, seu nome Ã© " << f.name << " isso mesmo? \n\n";
+        cout << "1 - Acenar com a cabeÃ§a que sim \t 2 - Tentar lembrar do nome \n";
         cin >> confirm;
-        if (confirm == 2) 
+        if (confirm == 2)
         {
             system("cls");
             cout << "Seu nome: ";
             cin >> f.name;
         }
     } while (confirm != 1);
-    do{
+    do {
         system("cls");
         cout << "Escolha sua classe \n\n";
         cout << "1 - Guerreiro \t 2 - Mago \t 3 - Arqueiro \t \n";
         cin >> f.classe;
-        
+
     } while (f.classe < 1 or f.classe > 3);
-    if (f.classe == 1) 
+    if (f.classe == 1)
     {
         d.classe = "Guerreiro";
     }
-    else if (f.classe == 2) 
+    else if (f.classe == 2)
     {
         d.classe = "Mago";
     }
@@ -148,16 +150,17 @@ void doFeatures(features &f, defaultOptions &d)
         d.classe = "Arqueiro";
     }
     system("cls");
-    cout << "Você foi cadastrado na cidade Albadram com sucesso " << f.name << " , caso tenha problemas venha me ver!\n";
-    cout << "\nVocê então se dirige para a taberna\n";
+    cout << "VocÃª foi cadastrado na cidade Albadram com sucesso " << f.name << " , caso tenha problemas venha me ver!\n";
     system("pause");
+    system("cls");
     f.hp = 100;
     f.luck = 0;
     f.inte = 0;
     f.str = 0;
+    d.healfix = f.hp;
 }
 
-void intro() 
+void intro()
 {
     system("cls");
     ifstream intro;
@@ -176,107 +179,109 @@ void intro()
 void showFeatures(features f, defaultOptions d)
 {
     system("cls");
-    cout << "Suas caracteristicas iniciais são. \n";
-    cout << "Hp: " << f.hp<<"\n";
+    cout << "Suas caracteristicas sÃ£o. \n";
+    cout << "Hp: " << f.hp << "\n";
     cout << "Sorte: " << f.luck << "\n";
-    cout << "Força: " << f.str << "\n";
+    cout << "ForÃ§a: " << f.str << "\n";
     cout << "inteligencia: " << f.inte << "\n";
-    cout << "Você é da classe: " << d.classe << "\n";
+    cout << "VocÃª Ã© da classe: " << d.classe << "\n";
+    cout << "VocÃª tem " << d.moedas << " moedas\n";
     system("pause");
 }
 
-void changeFeatures(features &f) 
+void changeFeatures(features& f, defaultOptions &d)
 {
     system("cls");
-    int change = 0 , quant = 0;
+    int change = 0, quant = 0;
     do
     {
-        cout << "Você deseja ver seus atributos? \n";
-        cout << "1 - SIM \t 2 - NÃO \n";
+        cout << "VocÃª deseja ver seus atributos? \n";
+        cout << "1 - Sim \t 2 - NÃ£o \n";
         cin >> change;
         system("cls");
     } while (change < 1 or change > 2);
-    if (change == 1) 
+    if (change == 1)
     {
         change = 0;
-        cout << "Você tem no total " << f.exppoints << " pontos de experiência \n";
+        cout << "VocÃª tem no total " << d.exppoints << " pontos de experiÃªncia \n";
         system("pause");
         system("cls");
-        if (f.exppoints <= 0) 
+        if (d.exppoints <= 0)
         {
-            cout << "Você não tem pontos para atribuir \n";
+            cout << "VocÃª nÃ£o tem pontos para atribuir \n";
             system("pause");
             system("cls");
         }
-        else 
+        else
         {
-            while (f.exppoints > 0) 
+            while (d.exppoints > 0)
             {
                 cout << "Qual caracteristicas gostaria de aumentar? \n";
-                cout << "1 - Vida \n2 - Sorte \n3 - Força \n4 - Inteligencia \nPontos restantes: " << f.exppoints << "\n";
+                cout << "1 - Vida \n2 - Sorte \n3 - ForÃ§a \n4 - Inteligencia \nPontos restantes: " << d.exppoints << "\n";
                 cin >> change;
                 switch (change)
                 {
-                    case 1:
+                case 1:
+                {
+                    cout << "Quantos pontos gostaria de atribuir? \n";
+                    cin >> quant;
+                    while (d.exppoints < quant)
                     {
-                        cout << "Quantos pontos gostaria de atribuir? \n";
+                        system("cls");
+                        cout << "Insira um valor vÃ¡lido\nQuantos pontos gostaria de atribuir\nHP+";
+                        cout << "\nPontos disponiveis: " << d.exppoints << "\n";
                         cin >> quant;
-                        while (f.exppoints < quant)
-                        {
-                            system("cls");
-                            cout << "Insira um valor válido\nQuantos pontos gostaria de atribuir\nHP+";
-                            cout << "\nPontos disponiveis: " << f.exppoints << "\n";
-                            cin >> quant;
-                        }
-                        f.exppoints -= quant;
-                        f.hp += quant;
-                        break;
                     }
-                    case 2:
+                    d.exppoints -= quant;
+                    f.hp += quant;
+                    d.healfix += quant;
+                    break;
+                }
+                case 2:
+                {
+                    cout << "Quantos pontos gostaria de atribuir? \n";
+                    cin >> quant;
+                    while (d.exppoints < quant)
                     {
-                        cout << "Quantos pontos gostaria de atribuir? \n";
+                        system("cls");
+                        cout << "Insira um valor vÃ¡lido\nQuantos pontos gostaria de atribuir\nSORTE+";
+                        cout << "\nPontos disponiveis: " << d.exppoints << "\n";
                         cin >> quant;
-                        while (f.exppoints < quant)
-                        {
-                            system("cls");
-                            cout << "Insira um valor válido\nQuantos pontos gostaria de atribuir\nSORTE+";
-                            cout << "\nPontos disponiveis: " << f.exppoints << "\n";
-                            cin >> quant;
-                        }
-                        f.exppoints -= quant;
-                        f.luck += quant;
-                        break;
                     }
-                    case 3:
+                    d.exppoints -= quant;
+                    f.luck += quant;
+                    break;
+                }
+                case 3:
+                {
+                    cout << "Quantos pontos gostaria de atribuir? \n";
+                    cin >> quant;
+                    while (d.exppoints < quant)
                     {
-                        cout << "Quantos pontos gostaria de atribuir? \n";
+                        system("cls");
+                        cout << "Insira um valor vÃ¡lido\nQuantos pontos gostaria de atribuir\nFORÃ‡A+";
+                        cout << "\nPontos disponiveis: " << d.exppoints << "\n";
                         cin >> quant;
-                        while (f.exppoints < quant)
-                        {
-                            system("cls");
-                            cout << "Insira um valor válido\nQuantos pontos gostaria de atribuir\nFORÇA+";
-                            cout << "\nPontos disponiveis: " << f.exppoints << "\n";
-                            cin >> quant;
-                        }
-                        f.exppoints -= quant;
-                        f.str += quant;
-                        break;
                     }
-                    case 4: 
+                    d.exppoints -= quant;
+                    f.str += quant;
+                    break;
+                }
+                case 4:
+                {
+                    cout << "Quantos pontos gostaria de atribuir? \n";
+                    cin >> quant;
+                    while (d.exppoints < quant)
                     {
-                        cout << "Quantos pontos gostaria de atribuir? \n";
+                        system("cls");
+                        cout << "Insira um valor vÃ¡lido\nQuantos pontos gostaria de atribuir\nINTELIGENCIA+";
+                        cout << "\nPontos disponiveis: " << d.exppoints << "\n";
                         cin >> quant;
-                        while (f.exppoints < quant)
-                        {
-                            system("cls");
-                            cout << "Insira um valor válido\nQuantos pontos gostaria de atribuir\nINTELIGENCIA+";
-                            cout << "\nPontos disponiveis: " << f.exppoints << "\n";
-                            cin >> quant;
-                        }
-                        f.exppoints -= quant;
-                            f.inte += quant;
-                            break;
                     }
+                    d.exppoints -= quant;
+                    f.inte += quant;
+                    break;
+                }
                 }
                 system("cls");
             }
@@ -286,13 +291,14 @@ void changeFeatures(features &f)
 
 struct mob
 {
-    int attack, mp,hp;
+    int attack, mp, hp;
     bool block;
 };
 
 struct heroAction
-{  
-    int attack = 17 ,mp, spell;
+{
+    defaultOptions d;
+    int attack = 17 + d.weapon, mp, spell;
     bool block, turn;
 };
 
@@ -336,144 +342,151 @@ struct ladino
     bool block = false;
 };
 
-void lutaUrso(urso u, features &f,heroAction h, defaultOptions d)
+void lutaUrso(urso u, features& f, heroAction h, defaultOptions &d)
 {
-    while(u.hp > 0 or f.hp > 0)
+    if (d.ursos > 1)
     {
-        system("cls");
-        int choice = 0;
-        int pass = 0;
-        int echoice = 0;
-        h.block = false;
+        while (u.hp > 0 or f.hp > 0)
+        {
+            system("cls");
+            int choice = 0;
+            int pass = 0;
+            int echoice = 0;
+            h.block = false;
 
-        do
-        {
-            cout << "Seu turno, oque deseja fazer? \n";
-            cout << "1 - Atacar \t 2 - Defender \n";
-            cin >> choice;
-        } while (choice < 1 or choice > 2);
-        switch (choice) 
-        {
-        case 1: 
-        {
-            switch (f.classe) 
+            do
             {
-            case 1: 
+                system("cls");
+                cout << "Seu turno, oque deseja fazer? \n";
+                cout << "1 - Atacar \t 2 - Defender \n";
+                cin >> choice;
+            } while (choice < 1 or choice > 2);
+            switch (choice)
             {
-                cout << "Você desfere um poderoso golpe de espada\n";
-                if (u.block == true) 
+            case 1:
+            {
+                switch (f.classe)
                 {
-                    cout << "O inimigo se defendeu do ataque\n";
-                }
-                else 
+                case 1:
                 {
-                    u.hp -= h.attack + rand() % 20 + f.str;
+                    cout << "VocÃª desfere um poderoso golpe de espada\n";
+                    if (u.block == true)
+                    {
+                        cout << "O inimigo se defendeu do ataque\n";
+                    }
+                    else
+                    {
+                        u.hp -= h.attack + rand() % 20 + f.str;
+                    }
+                    cout << "Vida atual do inimigo " << u.hp << "\n";
                 }
-                cout << "Vida atual do inimigo " << u.hp << "\n";
+                break;
+                case 2:
+                {
+                    cout << "VocÃª desfere um poderoso golpe de bola de fogo\n";
+                    if (u.block == true)
+                    {
+                        cout << "O inimigo se defendeu do ataque\n";
+                    }
+                    else
+                    {
+                        u.hp -= h.attack + rand() % 20 + f.inte;
+                    }
+                    cout << "Vida atual do inimigo " << u.hp << "\n";
+                    break;
+                }
+                case 3:
+                {
+                    cout << "VocÃª desfere uma poderosa flechada\n";
+                    if (u.block == true)
+                    {
+                        cout << "O inimigo se defendeu do ataque\n";
+                    }
+                    else
+                    {
+                        u.hp -= h.attack + rand() % 20 + f.luck;
+                    }
+                    cout << "Vida atual do inimigo " << u.hp << "\n";
+                    break;
+                }
+                }
             }
-            break;
-            case 2: 
+            case 2:
             {
-                cout << "Você desfere um poderoso golpe de bola de fogo\n";
-                if (u.block == true)
+                pass = d.rlucky + rand() % 10;
+                if (pass <= 6 and choice == 2)
                 {
-                    cout << "O inimigo se defendeu do ataque\n";
+                    h.block = true;
+                }
+                break;
+            }
+            }
+            u.block = false;
+
+            if (u.hp <= 0)
+            {
+                int golpe = 0;
+                system("cls");
+                cout << "O Urso foi derrotado \n";
+                do
+                {
+                    system("cls");
+                    cout << "VocÃª deseja dar o golpe de misericordia? \n";
+                    cout << "1 - Sim \t 2 - NÃ£o \n";
+                    cin >> golpe;
+                } while (golpe < 1 or golpe > 2);
+                if (golpe == 1)
+                {
+                    system("cls");
+                    cout << "experiencia obtida: 2\n";
+                    d.exppoints += 2;
+                    d.mortes += 1;
+                    d.ursos -= 1;
+                }
+                break;
+            }
+
+            echoice = rand() % 1;
+            switch (echoice)
+            {
+            case 0:
+            {
+                cout << "\nO Urso ataca com suas garras \n";
+                if (h.block == true)
+                {
+                    cout << "VocÃª bloqueou com sucesso. \n";
                 }
                 else
                 {
-                    u.hp -= h.attack + rand() % 20 + f.inte;
+                    cout << "Voce sofreu o ataque \n";
+                    f.hp -= (u.attack + d.rlucky + rand() % 5);
                 }
-                cout << "Vida atual do inimigo " << u.hp << "\n";
+                cout << "Sua vida atual Ã© " << f.hp << "\n";
                 break;
             }
-            case 3: 
+            case 1:
             {
-                cout << "Você desfere uma poderosa flechada\n";
-                if (u.block == true)
-                {
-                    cout << "O inimigo se defendeu do ataque\n";
-                }
-                else 
-                {
-                    u.hp -= h.attack + rand() % 20 + f.luck;
-                }
-                cout << "Vida atual do inimigo " << u.hp << "\n";
+                u.block = true;
                 break;
             }
-            }
-        }
-        case 2: 
-        {
-            pass = d.rlucky + rand() % 10;
-            if (pass <= 6 and choice == 2) 
-            {
-                h.block = true;
-            }
-            break;
-        }
-        }
-        u.block = false;
 
-        if (u.hp <= 0)
-        {
-            int golpe = 0;
-            system("cls");
-            cout << "O Urso foi derrotado \n";
-            do
-            {
-                cout << "Você deseja dar o golpe de misericordia? \n";
-                cout << "1 - Sim \t 2 - Não \n";
-                cin >> golpe;
-            } while (golpe < 1 or golpe > 2);
-            if (golpe == 1)
+            }
+            system("pause");
+
+            if (f.hp <= 0)
             {
                 system("cls");
-                cout << "experiencia obtida: 2\n";
-                f.exppoints += 2;
-                d.mortes += 1;
+                cout << "VocÃª morreu! \n";
+                system("pause");
+                d.live = false;
+                exit(0);
             }
-            break;
-        }
-
-        echoice = rand() % 1;
-        switch (echoice) 
-        {
-        case 0: 
-        {
-            cout << "\nO Urso ataca com suas garras \n";
-            if (h.block == true) 
-            {
-                cout << "Você bloqueou com sucesso. \n";
-            }
-            else 
-            {
-                cout << "Voce sofreu o ataque \n";
-                f.hp -= (u.attack + d.rlucky + rand() % 5);
-            }
-            cout << "Sua vida atual é " << f.hp << "\n";
-            break;
-        }
-        case 1: 
-        {
-            u.block = true;
-            break;
-        }
-
-        }
-        system("pause");
-        
-         if (f.hp <= 0)
-        {
-            system("cls");
-            cout << "Você morreu! \n";
-            system("pause");
-            d.live = false;
-            exit(0);
         }
     }
-    system("pause");
+    else if (d.ursos < 1)
+        system("pause");
 }
-void lutaTreante(treante t, features& f, heroAction h, defaultOptions d) 
+void lutaTreante(treante t, features& f, heroAction h, defaultOptions &d)
 {
     while (t.hp > 0 or f.hp > 0)
     {
@@ -485,6 +498,7 @@ void lutaTreante(treante t, features& f, heroAction h, defaultOptions d)
 
         do
         {
+            system("cls");
             cout << "Seu turno, oque deseja fazer? \n";
             cout << "1 - Atacar \t 2 - Defender \n";
             cin >> choice;
@@ -497,7 +511,7 @@ void lutaTreante(treante t, features& f, heroAction h, defaultOptions d)
             {
             case 1:
             {
-                cout << "Você desfere um poderoso golpe de espada\n";
+                cout << "VocÃª desfere um poderoso golpe de espada\n";
                 if (t.block == true)
                 {
                     cout << "O inimigo se defendeu do ataque\n";
@@ -511,7 +525,7 @@ void lutaTreante(treante t, features& f, heroAction h, defaultOptions d)
             break;
             case 2:
             {
-                cout << "Você desfere um poderoso golpe de bola de fogo\n";
+                cout << "VocÃª desfere um poderoso golpe de bola de fogo\n";
                 if (t.block == true)
                 {
                     cout << "O inimigo se defendeu do ataque\n";
@@ -525,7 +539,7 @@ void lutaTreante(treante t, features& f, heroAction h, defaultOptions d)
             }
             case 3:
             {
-                cout << "Você desfere uma poderosa flechada\n";
+                cout << "VocÃª desfere uma poderosa flechada\n";
                 if (t.block == true)
                 {
                     cout << "O inimigo se defendeu do ataque\n";
@@ -558,16 +572,18 @@ void lutaTreante(treante t, features& f, heroAction h, defaultOptions d)
             cout << "O Treante foi derrotado \n";
             do
             {
-                cout << "Você deseja dar o golpe de misericordia? \n";
-                cout << "1 - Sim \t 2 - Não \n";
+                system("cls");
+                cout << "VocÃª deseja dar o golpe de misericordia? \n";
+                cout << "1 - Sim \t 2 - NÃ£o \n";
                 cin >> golpe;
             } while (golpe < 1 or golpe > 2);
             if (golpe == 1)
             {
                 system("cls");
                 cout << "experiencia obtida: 5\n";
-                f.exppoints += 5;
+                d.exppoints += 5;
                 d.mortes += 1;
+                d.treantes -= 1;
             }
             break;
         }
@@ -580,14 +596,14 @@ void lutaTreante(treante t, features& f, heroAction h, defaultOptions d)
             cout << "\nO Treante ataca com suas videiras \n";
             if (h.block == true)
             {
-                cout << "Você bloqueou com sucesso. \n";
+                cout << "VocÃª bloqueou com sucesso. \n";
             }
             else
             {
                 cout << "Voce sofreu o ataque \n";
                 f.hp -= (t.attack + d.rlucky + rand() % 5);
             }
-            cout << "Sua vida atual é " << f.hp << "\n";
+            cout << "Sua vida atual Ã© " << f.hp << "\n";
             break;
         }
         case 1:
@@ -602,7 +618,7 @@ void lutaTreante(treante t, features& f, heroAction h, defaultOptions d)
         if (f.hp <= 0)
         {
             system("cls");
-            cout << "Você morreu! \n";
+            cout << "VocÃª morreu! \n";
             system("pause");
             d.live = false;
             exit(0);
@@ -610,7 +626,7 @@ void lutaTreante(treante t, features& f, heroAction h, defaultOptions d)
     }
     system("pause");
 }
-void lutaMimico(mimico m, features& f, heroAction h, defaultOptions d)
+void lutaMimico(mimico m, features& f, heroAction h, defaultOptions &d)
 {
     int count = 0;
     while (m.hp > 0 or f.hp > 0)
@@ -623,12 +639,13 @@ void lutaMimico(mimico m, features& f, heroAction h, defaultOptions d)
         if (count >= 5)
         {
             m.hp += 50;
-            cout << "O Mimico se regenera 50 pontos de vida, sua vida atual é de " << m.hp << "\n\n";
+            cout << "O Mimico se regenera 50 pontos de vida, sua vida atual Ã© de " << m.hp << "\n\n";
             system("pause");
             count = 0;
         }
         do
         {
+            system("cls");
             cout << "Seu turno, oque deseja fazer? \n";
             cout << "1 - Atacar \t 2 - Defender \n";
             cin >> choice;
@@ -641,7 +658,7 @@ void lutaMimico(mimico m, features& f, heroAction h, defaultOptions d)
             {
             case 1:
             {
-                cout << "Você desfere um poderoso golpe de espada\n";
+                cout << "VocÃª desfere um poderoso golpe de espada\n";
                 if (m.block == true)
                 {
                     cout << "O inimigo se defendeu do ataque\n";
@@ -655,7 +672,7 @@ void lutaMimico(mimico m, features& f, heroAction h, defaultOptions d)
             break;
             case 2:
             {
-                cout << "Você desfere um poderoso golpe de bola de fogo\n";
+                cout << "VocÃª desfere um poderoso golpe de bola de fogo\n";
                 if (m.block == true)
                 {
                     cout << "O inimigo se defendeu do ataque\n";
@@ -669,7 +686,7 @@ void lutaMimico(mimico m, features& f, heroAction h, defaultOptions d)
             }
             case 3:
             {
-                cout << "Você desfere uma poderosa flechada\n";
+                cout << "VocÃª desfere uma poderosa flechada\n";
                 if (m.block == true)
                 {
                     cout << "O inimigo se defendeu do ataque\n";
@@ -688,7 +705,9 @@ void lutaMimico(mimico m, features& f, heroAction h, defaultOptions d)
             pass = d.rlucky + rand() % 10;
             if (pass <= 6 and choice == 2)
             {
+                cout << "VocÃª se defende, porem o mimico nÃ£o demonstra agressividade";
                 h.block = true;
+                system("pause");
             }
             break;
         }
@@ -702,16 +721,18 @@ void lutaMimico(mimico m, features& f, heroAction h, defaultOptions d)
             cout << "O Mimico foi derrotado \n";
             do
             {
-                cout << "Você deseja dar o golpe de misericordia? \n";
-                cout << "1 - Sim \t 2 - Não \n";
+                system("cls");
+                cout << "VocÃª deseja dar o golpe de misericordia? \n";
+                cout << "1 - Sim \t 2 - NÃ£o \n";
                 cin >> golpe;
             } while (golpe < 1 or golpe > 2);
             if (golpe == 1)
             {
                 system("cls");
                 cout << "experiencia obtida: 10\n";
-                f.exppoints += 10;
+                d.exppoints += 10;
                 d.mortes += 1;
+                d.mimicos -= 1;
             }
             break;
         }
@@ -719,7 +740,7 @@ void lutaMimico(mimico m, features& f, heroAction h, defaultOptions d)
         if (f.hp <= 0)
         {
             system("cls");
-            cout << "Você morreu! \n";
+            cout << "VocÃª morreu! \n";
             system("pause");
             d.live = false;
             exit(0);
@@ -727,7 +748,7 @@ void lutaMimico(mimico m, features& f, heroAction h, defaultOptions d)
         system("pause");
     }
 }
-void lutaBoss(boss b, features & f, heroAction h, defaultOptions d) 
+void lutaBoss(boss b, features& f, heroAction h, defaultOptions &d)
 {
     {
         while (b.hp > 0 or f.hp > 0)
@@ -740,6 +761,7 @@ void lutaBoss(boss b, features & f, heroAction h, defaultOptions d)
 
             do
             {
+                system("cls");
                 cout << "Seu turno, oque deseja fazer? \n";
                 cout << "1 - Atacar \t 2 - Defender \n";
                 cin >> choice;
@@ -752,7 +774,7 @@ void lutaBoss(boss b, features & f, heroAction h, defaultOptions d)
                 {
                 case 1:
                 {
-                    cout << "Você desfere um poderoso golpe de espada\n";
+                    cout << "VocÃª desfere um poderoso golpe de espada\n";
                     if (b.block == true)
                     {
                         cout << "O inimigo se defendeu do ataque\n";
@@ -766,7 +788,7 @@ void lutaBoss(boss b, features & f, heroAction h, defaultOptions d)
                 break;
                 case 2:
                 {
-                    cout << "Você desfere um poderoso golpe de bola de fogo\n";
+                    cout << "VocÃª desfere um poderoso golpe de bola de fogo\n";
                     if (b.block == true)
                     {
                         cout << "O inimigo se defendeu do ataque\n";
@@ -780,7 +802,7 @@ void lutaBoss(boss b, features & f, heroAction h, defaultOptions d)
                 }
                 case 3:
                 {
-                    cout << "Você desfere uma poderosa flechada\n";
+                    cout << "VocÃª desfere uma poderosa flechada\n";
                     if (b.block == true)
                     {
                         cout << "O inimigo se defendeu do ataque\n";
@@ -813,22 +835,24 @@ void lutaBoss(boss b, features & f, heroAction h, defaultOptions d)
                 cout << "O Boss foi derrotado \n";
                 do
                 {
-                    cout << "Você deseja dar o golpe de misericordia? \n";
-                    cout << "1 - Sim \t 2 - Não \n";
+                    system("cls");
+                    cout << "VocÃª deseja dar o golpe de misericordia? \n";
+                    cout << "1 - Sim \t 2 - NÃ£o \n";
                     cin >> golpe;
-                }
-                while (golpe < 1 or golpe > 2);
+                } while (golpe < 1 or golpe > 2);
                 if (golpe == 1)
                 {
                     system("cls");
-                    cout << "Você obteve o chifre do diabo, parece interessante mostrar isso ao taberneiro \n";
+                    cout << "VocÃª obteve o chifre do diabo, parece interessante mostrar isso ao taberneiro \n";
                     cout << "experiencia obtida: 50\n";
-                    f.exppoints += 50;
+                    d.exppoints += 50;
                     d.mortes += 1;
+                    d.boss -= 1;
                 }
-                else 
+                else
                 {
-                    cout << "Você poupou a vida do diabo, espero que não se arrependa dessa decissão \n";
+                    cout << "VocÃª poupou a vida do diabo, espero que nÃ£o se arrependa dessa decissÃ£o \n";
+                    d.boss -= 1;
                 }
                 break;
             }
@@ -838,17 +862,17 @@ void lutaBoss(boss b, features & f, heroAction h, defaultOptions d)
             {
             case 0:
             {
-                cout << "\nO Diabo ataca com suas Garras \n";
+                cout << "\nO Diabo ataca com sua espada \n";
                 if (h.block == true)
                 {
-                    cout << "Você bloqueou com sucesso. \n";
+                    cout << "VocÃª bloqueou com sucesso. \n";
                 }
                 else
                 {
                     cout << "Voce sofreu o ataque \n";
                     f.hp -= (b.attack + d.rlucky + rand() % 5);
                 }
-                cout << "Sua vida atual é " << f.hp << "\n";
+                cout << "Sua vida atual Ã© " << f.hp << "\n";
                 break;
             }
             case 1:
@@ -863,7 +887,7 @@ void lutaBoss(boss b, features & f, heroAction h, defaultOptions d)
             if (f.hp <= 0)
             {
                 system("cls");
-                cout << "Você morreu! \n";
+                cout << "VocÃª morreu! \n";
                 system("pause");
                 d.live = false;
                 exit(0);
@@ -872,7 +896,7 @@ void lutaBoss(boss b, features & f, heroAction h, defaultOptions d)
         system("pause");
     }
 }
-void lutaLadino(ladino l, features& f, heroAction h, defaultOptions d) 
+void lutaLadino(ladino l, features& f, heroAction h, defaultOptions &d)
 {
     while (l.hp > 0 or f.hp > 0)
     {
@@ -880,10 +904,12 @@ void lutaLadino(ladino l, features& f, heroAction h, defaultOptions d)
         int choice = 0;
         int pass = 0;
         int echoice = 0;
+        int golpe = 0;
         h.block = false;
 
         do
         {
+            system("cls");
             cout << "Seu turno, oque deseja fazer? \n";
             cout << "1 - Atacar \t 2 - Defender \n";
             cin >> choice;
@@ -894,79 +920,88 @@ void lutaLadino(ladino l, features& f, heroAction h, defaultOptions d)
         {
             switch (f.classe)
             {
-            case 1:
-            {
-                cout << "Você desfere um poderoso golpe de espada\n";
-                if (l.block == true)
+                case 1:
                 {
-                    cout << "O inimigo se defendeu do ataque\n";
+                    cout << "VocÃª desfere um poderoso golpe de espada\n";
+                    if (l.block == true)
+                    {
+                        cout << "O inimigo se defendeu do ataque\n";
+                    }
+                    else
+                    {
+                        l.hp -= h.attack + rand() % 20 + f.str;
+                    }
+                    cout << "Vida atual do inimigo " << l.hp << "\n";
+                    break;
                 }
-                else
+                case 2:
                 {
-                    l.hp -= h.attack + rand() % 20 + f.str;
+                    cout << "VocÃª desfere um poderoso golpe de bola de fogo\n";
+                    if (l.block == true)
+                    {
+                        cout << "O inimigo se defendeu do ataque\n";
+                    }
+                    else
+                    {
+                        l.hp -= h.attack + rand() % 20 + f.inte;
+                    }
+                    cout << "Vida atual do inimigo " << l.hp << "\n";
+                    break;
                 }
-                cout << "Vida atual do inimigo " << l.hp << "\n";
+                case 3:
+                {
+                    cout << "VocÃª desfere uma poderosa flechada\n";
+                    if (l.block == true)
+                    {
+                        cout << "O inimigo se defendeu do ataque\n";
+                    }
+                    else
+                    {
+                        l.hp -= h.attack + rand() % 20 + f.luck;
+                    }
+                    cout << "Vida atual do inimigo " << l.hp << "\n";
+                    break;
+                }
             }
-            break;
+        }
             case 2:
             {
-                cout << "Você desfere um poderoso golpe de bola de fogo\n";
-                if (l.block == true)
+                pass = d.rlucky + rand() % 10;
+                if (pass <= 6 and choice == 2)
                 {
-                    cout << "O inimigo se defendeu do ataque\n";
+                    h.block = true;
                 }
-                else
-                {
-                    l.hp -= h.attack + rand() % 20 + f.inte;
-                }
-                cout << "Vida atual do inimigo " << l.hp << "\n";
                 break;
             }
-            case 3:
-            {
-                cout << "Você desfere uma poderosa flechada\n";
-                if (l.block == true)
-                {
-                    cout << "O inimigo se defendeu do ataque\n";
-                }
-                else
-                {
-                    l.hp -= h.attack + rand() % 20 + f.luck;
-                }
-                cout << "Vida atual do inimigo " << l.hp << "\n";
-                break;
-            }
-            }
-        }
-        case 2:
-        {
-            pass = d.rlucky + rand() % 10;
-            if (pass <= 6 and choice == 2)
-            {
-                h.block = true;
-            }
-            break;
-        }
         }
         l.block = false;
 
         if (l.hp <= 0)
         {
-            int golpe = 0;
             system("cls");
             cout << "O Ladino foi derrotado \n";
             do
             {
-                cout << "Você deseja dar o golpe de misericordia? \n";
-                cout << "1 - Sim \t 2 - Não \n";
+                system("cls");
+                cout << "VocÃª deseja dar o golpe de misericordia? \n";
+                cout << "1 - Sim \t 2 - NÃ£o \n";
                 cin >> golpe;
             } while (golpe < 1 or golpe > 2);
             if (golpe == 1)
             {
                 system("cls");
-                cout << "experiencia obtida: 2\n";
-                f.exppoints += 2;
+                cout << "experiencia obtida: 2, gold obtido 2\n";
                 d.mortes += 1;
+                d.exppoints += 2;
+                d.boss -= 1;
+                d.moedas += 2;
+            }
+            else 
+            {
+                system("cls");
+                cout << "experiencia obtida: 2\n";
+                cout << "O ladino volta para se recuperar!\n";
+                d.exppoints += 2;
             }
             break;
         }
@@ -979,14 +1014,14 @@ void lutaLadino(ladino l, features& f, heroAction h, defaultOptions d)
             cout << "\nO Ladino ataca com suas adagas\n";
             if (h.block == true)
             {
-                cout << "Você bloqueou com sucesso. \n";
+                cout << "VocÃª bloqueou com sucesso. \n";
             }
             else
             {
                 cout << "Voce sofreu o ataque \n";
                 f.hp -= (l.attack + d.rlucky + rand() % 5);
             }
-            cout << "Sua vida atual é " << f.hp << "\n";
+            cout << "Sua vida atual Ã© " << f.hp << "\n";
             break;
         }
         case 1:
@@ -1001,7 +1036,7 @@ void lutaLadino(ladino l, features& f, heroAction h, defaultOptions d)
         if (f.hp <= 0)
         {
             system("cls");
-            cout << "Você morreu! \n";
+            cout << "VocÃª morreu! \n";
             system("pause");
             d.live = false;
             exit(0);
@@ -1010,87 +1045,119 @@ void lutaLadino(ladino l, features& f, heroAction h, defaultOptions d)
     system("pause");
 }
 
-void taberna(defaultOptions &d, features &f)
+void save(defaultOptions& d, features& f)
+{
+}
+
+void load(defaultOptions& d, features& f)
+{
+}
+
+void taberna(defaultOptions& d, features& f)
 {
     int choice = 0;
-    do
+    while (choice != 5)
     {
-        system("cls");
-        cout << "Bem vindo a taberna aventureiro, como podemos te ajudar?\n";
-        ifstream taberna;
-        string phrase;
-        int currentLine = 0;
-        taberna.open("taberna.txt");
-        while (!taberna.eof()) {
-            getline(taberna, phrase);
-            cout << phrase << "\n";
-        }
-        taberna.close();
-        cout << "Você tem " <<d.moedas << " moedas.\n";
-        cin >> choice;
-    } while (choice < 1 or choice > 4);
-    switch (choice) 
-    {
-        case 1: 
+        do
         {
-            if (d.moedas < 3) 
+            system("cls");
+            cout << "Bem vindo a taberna aventureiro, como podemos te ajudar?\n";
+            ifstream taberna;
+            string phrase;
+            int currentLine = 0;
+            taberna.open("taberna.txt");
+            while (!taberna.eof()) {
+                getline(taberna, phrase);
+                cout << phrase << "\n";
+            }
+            taberna.close();
+            cout << "VocÃª tem " << d.moedas << " moedas.\n";
+            cin >> choice;
+        } while (choice < 1 or choice > 5);
+        switch (choice)
+        {
+        case 1:
+        {
+            if (d.moedas < 3)
             {
-                cout << "Você não tem dinheiro o suficiente";
+                system("cls");
+                cout << "VocÃª nÃ£o tem dinheiro o suficiente";
+                system("pause");
             }
             else
             {
-                cout << "Voce perdeu 3 moedas, agora você tem o total de " << d.moedas;
+                system("cls");
+                d.moedas -= 3;
+                cout << "Voce perdeu 3 moedas, agora vocÃª tem o total de " << d.moedas <<"\n";
                 d.taberneirocount += 1;
-                if(d.taberneirocount >= 3)
+                system("pause");
+                if (d.taberneirocount >= 3)
                 {
                     int choice = 0;
-                    do
+                    if (!d.taberneirof and !d.taberneiro)
                     {
-                        cout << "O taberneiro fica muito feliz que você já virou cliente, então ele pede se você quer se associar a taberna\n";
-                        cout << "1 - Sim \ 2 - Não";
-                    } while (choice < 1 or choice > 2);
-                    if (choice == 1) 
-                    {
-                        cout << "Parabens você se associou a taberna!";
-                        d.taberneiro = true;
+                        do
+                        {
+                            system("cls");
+                            cout << "O taberneiro fica muito feliz que vocÃª jÃ¡ virou cliente, entÃ£o ele pede se vocÃª quer se associar a taberna\n";
+                            cout << "1 - Sim \t 2 - NÃ£o\n";
+                            cin >> choice;
+                        } while (choice < 1 or choice > 2);
+                        if (choice == 2)
+                        {
+                            d.taberneirof = true;
+                        }
+                        else if (choice == 1)
+                        {
+                            cout << "Parabens vocÃª se associou a taberna!\n";
+                            d.taberneiro = true;
+                            system("pause");
+                        }
                     }
+
                 }
             }
+            break;
         }
-        case 2: 
+        case 2:
         {
-            int x = rand() % 2;
+            int x = rand() % 3;
             switch (x)
             {
-                case 1:
-                {
-                    system("cls");
-                    cout << "Você desabafa seus problemas com o taberneiro, porem ele parece ocupado.";
-                    system("pause");
-                }
-                case 2:
-                {
-                    system("cls");
-                    cout << "Você conversa com a linda esposa do taberneiro, mas nada acontece!\n";
-                    system("pause");
-                }
-                case 3:
-                {
-                    system("cls");
-                    cout << "Você perde horas conversando com o taberneiro e quando vê já é hora de ir para casa e perde 1 ponto de experiencia \n";
-                    system("pause");
-                    if (f.exppoints > 0)
-                    {
-                        f.exppoints -= 1;
-                    }
-                    cout << "Atualmene você tem " << f.exppoints << " pontos de experiencia";
-                    system("pause");
-                }
+            case 0:
+            {
+                system("cls");
+                cout << "VocÃª desabafa seus problemas com o taberneiro, porem ele parece ocupado.\n";
+                system("pause");
+                break;
             }
+            case 1:
+            {
+                system("cls");
+                cout << "VocÃª conversa com a linda esposa do taberneiro, mas nada acontece!\n";
+                system("pause");
+                break;
+            }
+            case 2:
+            {
+                system("cls");
+                cout << "VocÃª perde horas conversando com o taberneiro e quando vÃ¡ jÃ¡ Ã© hora de ir para casa e perde 1 ponto de experiencia \n";
+                system("pause");
+                if (d.exppoints > 0)
+                {
+                    d.exppoints -= 1;
+                }
+                system("cls");
+                cout << "Atualmene vocÃª tem " << d.exppoints << " pontos de experiencia\n";
+                system("pause");
+                break;
+            }
+            }
+            break;
         }
-        case 3: 
+        case 3:
         {
-            if (d.ladina)
+            if (d.ladina and !d.ladinaf)
             {
                 int choice = 0;
                 do
@@ -1105,31 +1172,508 @@ void taberna(defaultOptions &d, features &f)
                         cout << phrase << "\n";
                     }
                     ladina.close();
-                    cout << "1 - SIM \ 2 - Não\n";
+                    cout << "1 - Aceita \t 2 - Recusar\n";
                     cin >> choice;
-                    if (choice == 1 and d.moedas >=20) 
-                    {
-                        cout << "Você perdeu 20 moedas\n";
-                        d.moedas -= 20;
-                        d.ladina = true;
-                    }
-                    else if (choice == 1 and d.moedas < 20) 
-                    {
-                        cout << "Você não tem moedas o suficiente, tente novamente outro dia\n";
-                    }
-                    else if (choice == 2) 
-                    {
-                        d.ladina = false;
-                    }
                 } while (choice < 1 or choice > 2);
+                switch (choice)
+                {
+                case 1:
+                {
+                    if (d.moedas >= 20 and d.ladina and !d.ladinaf)
+                    {
+                        system("cls");
+                        cout << "VocÃª perdeu 20 moedas\n";
+                        d.moedas -= 20;
+                        d.ladina = false;
+                        system("pause");
+                    }
+                    else if (d.moedas < 20 and d.ladina and !d.ladinaf)
+                    {
+                        cout << "VocÃª nÃ£o tem moedas o suficiente, tente novamente outro dia\n";
+                        system("pause");
+                    }
+                    break;
+                }
+                case 2:
+                {
+                    system("cls");
+                    d.ladinaf = true;
+                    cout << "A jovem moÃ§a sai da mesa murmurando alguma coisa que vocÃª nÃ£o entende\n";
+                    break;
+                }
+                }
+            }
+            else if (d.ladinaf or !d.ladina)
+            {
+                system("cls");
+                cout << "VocÃª senta na mesa, porem ninguem vem falar com vocÃª.\n";
+                system("pause");
+            }
+            system("cls");
+            break;
+        }
+        case 4:
+        {
+            changeFeatures(f,d);
+            showFeatures(f, d);
+            break;
+        }
+        }
+    }
+}
+
+void avanca(defaultOptions& d)
+{
+    int choice = 0;
+    do
+    {
+        cout << "VocÃª deseja avanÃ§ar ou retroceder?\n";
+        cout << "1 - AvanÃ§ar \t 2 - Retroceder\n";
+        cin >> choice;
+        system("cls");
+    } while (choice < 1 or choice > 2);
+
+    if (d.pos == 0 and choice == 2)
+    {
+        cout << "VocÃª nÃ£o pode passar dos portÃµes da cidade\n";
+        system("pause");
+        system("cls");
+        do
+        {
+            cout << "VocÃª deseja avanÃ§a?\n";
+            cout << "1 - Sim \t 2 - NÃ£o\n";
+            cin >> choice;
+            system("cls");
+        } while (choice != 1);
+    }
+
+    else if(d.pos == 8 and choice == 1)
+    {
+        cout << "VocÃª nÃ£o pode passar pelo castelo do rei\n";
+        system("pause");
+        system("cls");
+    }
+
+    else if (choice == 1)
+    {
+        d.pos += +1;
+        choice = 0;
+        d.going = true;
+    }
+    else if (choice == 2)
+    {
+        d.pos -= 1;
+        choice = 0;
+        d.going = false;
+    }
+}
+
+void mercador(defaultOptions& d)
+{
+    system("cls");
+    if (d.moedas < 30)
+    {
+        cout << "NÃ£o converso com pessoas pobres, volte quando tiver dinheiro\n";
+        system("pause");
+        system("cls");
+    }
+    else if (d.moedas >= 30 and !d.taberneiro)
+    {
+        int choice = 0;
+        while (choice != 4)
+        {
+            system("pause");
+            system("cls");
+            do
+            {
+                system("cls");
+                cout << "Seja bem vindo a minha loja, fique a vontade para conhecer e caso queira comprar algo Ã© sÃ³ me chamar.\n";
+                cout << "ITENS A VENDA:\n";
+                cout << "1 - Espada de AÃ§o 30g\n2 - Arco de Treante 30g\n3 - Tomo Amplificador 30g\n4 - Sair \nGold disponÃ­vel: " << d.moedas << "\n";
+                cin >> choice;
+            } while (choice < 1 or choice > 4);
+            switch (choice)
+            {
+            case 1:
+            {
+                if (d.classe == "Arqueiro" or d.classe == "Mago")
+                {
+                    cout << "VocÃª nÃ£o deveria comprar isso\n";
+                }
+                else if (d.classe == "Guerreiro" and d.moedas >= 30)
+                {
+                    cout << "VocÃª acabou de adquirir uma Espada de AÃ§o\n";
+                    d.moedas -= 30;
+                    d.weapon = 30;
+                }
+                else if (d.moedas < 30)
+                {
+                    system("cls");
+                    cout << "VocÃª ainda nÃ£o tem dinheiro suficiente para comprar esse artefato\n";
+                }
+                break;
+            }
+            case 2:
+            {
+                if (d.classe == "Guerreiro" or d.classe == "Mago")
+                {
+                    cout << "VocÃª nÃ£o deveria comprar isso\n";
+                }
+                else if (d.classe == "Arqueiro" and d.moedas >= 30)
+                {
+                    cout << "VocÃª acabou de adquirir um Arco de Treante\n";
+                    d.moedas -= 30;
+                    d.weapon = 30;
+                }
+                else if (d.moedas < 30)
+                {
+                    system("cls");
+                    cout << "VocÃª ainda nÃ£o tem dinheiro suficiente para comprar esse artefato\n";
+                }
+                break;
+            }
+            case 3:
+            {
+                if (d.classe == "Guerreiro" or d.classe == "Arqueiro")
+                {
+                    cout << "VocÃª nÃ£o deveria comprar isso\n";
+                }
+                else if (d.classe == "Mago" and d.moedas >= 30)
+                {
+                    cout << "VocÃª acabou de adquirir um Tomo Amplificador\n";
+                    d.moedas -= 30;
+                    d.weapon = 30;
+                }
+                else if (d.moedas < 30)
+                {
+                    system("cls");
+                    cout << "VocÃª ainda nÃ£o tem dinheiro suficiente para comprar esse artefato\n";
+                }
+                break;
+            }
+            case 4:
+            {
+                system("cls");
+                cout << "Volte quando quiser\n";
+                system("pause");
+            }
+            break;
+            }
+        }
+    }
+    else if (d.moedas >= 30 and d.taberneiro)
+    {
+        int choice = 0;
+        while (choice != 5)
+        {
+            do
+            {
+                cout << "Seja bem vindo a minha loja, fique a vontade para conhecer e caso queira comprar algo Ã© sÃ³ me chamar.\n";
+                cout << "ITENS A VENDA:\n";
+                cout << "1 - Espada de AÃ§o 30g\n2 - Arco de Treante 30g\n3 - Tomo Amplificador 30g\n4 - Anel do poder (overpower) 100g \n5 - Sair \nGold disponÃ­vel: " <<d.moedas<<"\n";
+                cin >> choice;
+            } while (choice < 1 or choice > 5);
+            switch (choice)
+            {
+                case 1:
+                {
+                    if (d.classe == "Arqueiro" or d.classe == "Mago")
+                    {
+                        system("cls");
+                        cout << "VocÃª nÃ£o deveria comprar isso\n";
+                    }
+                    else if (d.classe == "Guerreiro" and d.moedas >= 30)
+                    {
+                        system("cls");
+                        cout << "VocÃª acabou de adquirir uma Espada de AÃ§o\n";
+                        d.moedas -= 30;
+                        d.weapon = 30;
+                    }
+                    else if (d.moedas < 30)
+                    {
+                        system("cls");
+                        cout << "VocÃª ainda nÃ£o tem dinheiro suficiente para comprar esse artefato\n";
+                    }
+                    break;
+                }
+                case 2:
+                {
+                    if (d.classe == "Guerreiro" or d.classe == "Mago")
+                    {
+                        system("cls");
+                        cout << "VocÃª nÃ£o deveria comprar isso\n";
+                    }
+                    else if (d.classe == "Arqueiro" and d.moedas >= 30)
+                    {
+                        system("cls");
+                        cout << "VocÃª acabou de adquirir um Arco de Treante\n";
+                        d.moedas -= 30;
+                        d.weapon = 30;
+                    }
+                    else if (d.moedas < 30)
+                    {
+                        system("cls");
+                        cout << "VocÃª ainda nÃ£o tem dinheiro suficiente para comprar esse artefato\n";
+                    }
+                    break;
+                }
+                case 3:
+                {
+                    if (d.classe == "Guerreiro" or d.classe == "Arqueiro")
+                    {
+                        system("cls");
+                        cout << "VocÃª nÃ£o deveria comprar isso\n";
+                    }
+                    else if (d.classe == "Mago" and d.moedas >= 30)
+                    {
+                        system("cls");
+                        cout << "VocÃª acabou de adquirir um Tomo Amplificador\n";
+                        d.moedas -= 30;
+                        d.weapon = 30;
+                    }
+                    else if (d.moedas < 30)
+                    {
+                        system("cls");
+                        cout << "VocÃª ainda nÃ£o tem dinheiro suficiente para comprar esse artefato\n";
+                    }
+                    break;
+                }
+                case 4:
+                {
+                    if (d.moedas >= 100)
+                    {
+                        system("cls");
+                        cout << "Parabens vocÃª acabou de adquirir um Anel do Poder\n";
+                        d.moedas -= 100;
+                        d.weapon += 50;
+
+                    }
+                    else if (d.moedas < 30)
+                    {
+                        system("cls");
+                        cout << "VocÃª ainda nÃ£o tem dinheiro suficiente para comprar esse artefato\n";
+                    }
+                    break;
+                }
+                case 5:
+                {
+                    cout << "Volte quando quiser";
+                    break;
+                }
+            }
+            system("pause");
+            system("cls");
+        }
+    }
+}
+
+void arena(defaultOptions& d, features f, ladino l, heroAction h)
+{
+    int choice = 0;
+    if (d.ladina)
+    {
+        while (choice != 2)
+        {
+            do
+            {
+                system("cls");
+                cout << "VocÃª adentrou a Arena!\nO que deseja fazer?\n";
+                cout << "1 - Treinar \t 2 - Sair\n";
+                cin >> choice;
+            } while (choice < 1 or choice > 2);
+            if (choice == 1)
+            {
+                lutaLadino(l, f, h, d);
+            }
+            system("cls");
+        }
+    }
+    else if (!d.ladina)
+    {
+        while (choice != 3)
+        {
+            do
+            {
+                system("cls");
+                cout << "VocÃª adentrou a Arena!\nO que deseja fazer?\n";
+                cout << "1 - Treinar \t 2 - curar \t 3 - Sair\n";
+                cin >> choice;
+            } while (choice < 1 or choice > 3);
+            switch (choice)
+            {
+            case 1:
+            {
+                lutaLadino(l, f, h, d);
+                break;
+            }
+            case 2:
+            {
+                cout << "VocÃª foi curado\n";
+                system("pause");
+                f.hp = d.healfix;
+                break;
+
+            }
+            system("cls");
+            }
+        }
+    }
+}
+
+void acao(defaultOptions &d, features &f, heroAction h, ladino l, urso u, treante t, mimico mi, boss b)
+{
+    int pass = 0;
+    system("cls");
+    switch (d.pos)
+    {
+        case 0:
+        {
+            cout << "VocÃª esta no centro da cidade\n";
+            break;
+        }
+        case 1:
+        {
+            do
+            {
+                cout << "VocÃª se encontra na taberna\nDeseja entrar?\n";
+                cout << "1 - Sim \t 2 - NÃ£o\n";
+                    cin >> pass;
+            } while (pass < 1 or pass > 2);
+            if (pass == 1)
+            {
+                taberna(d, f);
+            }
+            break;
+        }
+        case 2:
+        {
+            do
+            {
+                cout << "VocÃª se encontra na loja de armas\nDeseja entrar?\n";
+                cout << "1 - Sim \t 2 - NÃ£o\n";
+                    cin >> pass;
+            } while (pass < 1 or pass > 2);
+            if (pass == 1)
+            {
+                mercador(d);
+            }
+            break;
+        }
+        case 3:
+        {
+            do
+            {
+                cout << "VocÃª se encontra na arena\nDeseja entrar?\n";
+                cout << "1 - Sim \t 2 - NÃ£o\n";
+                cin >> pass;
+            } while (pass < 1 or pass > 2);
+            if (pass == 1) 
+            {
+                arena(d,f,l,h);
+            }
+            break;
+        }
+        case 4:
+        {
+            cout << "VocÃª esta nos portÃµes para a floresta.\n";
+            break;
+        }   
+        case 5:
+        {
+            if(d.ursos >= 1)
+            {
+             cout << "VocÃª se encontra na floresta 1\n";
+             system("pause");
+             system("cls");
+             cout << "De repente surge um Urso de sua caverna\n";
+             system("pause");
+             system("cls");
+             lutaUrso(u,f,h,d);
+            }
+            else if(d.ursos < 1)
+            {
+                system("cls");
+                cout << "VocÃª se encontra na floresta 1\n";
+                cout << "Parece que vocÃª eliminou todos os inimigos desse mapa\n";
                 system("pause");
                 system("cls");
             }
+            break;
         }
-        case 4: 
+        case 6: 
         {
-            changeFeatures(f);
-            showFeatures(f, d);
+            if (d.treantes >= 1)
+            {
+                cout << "VocÃª se encontra na floresta 2\n";
+                system("pause");
+                system("cls");
+                cout << "De repente vocÃª percebe que uma arvore comeÃ§a a te encarar\n";
+                system("pause");
+                system("cls");
+                cout << "E de repente surge um treante\n";
+                system("pause");
+                system("cls");
+                lutaTreante(t, f, h, d);
+            }
+            else if (d.treantes < 1)
+            {
+                system("cls");
+                cout << "Parece que vocÃª eliminou todos os inimigos desse mapa\n";
+                system("pause");
+                system("cls");
+            }
+            break;
+        }
+        case 7: 
+        {
+            if (d.mimicos >= 1)
+            {
+                int choice = 0;
+                do
+                {
+                    cout << "VocÃª adentra no castelo do rei negro\n";
+                    system("pause");
+                    system("cls");
+                    cout << "De repente vocÃª percebe um bau no canto da sala\n";
+                    cout << "1 - Abrir o Bau \t 2 - Passar\n";
+                    cin >> choice;
+                } while (choice < 1 or choice > 2);
+                if(choice == 1)
+                {
+                    system("cls");
+                    lutaMimico(mi, f, h, d);
+                }
+               
+            }
+            else if (d.mimicos < 1)
+            {
+                system("cls");
+                cout << "Parece que vocÃª eliminou todos os inimigos desse mapa\n";
+                system("pause");
+                system("cls");
+            }
+            break;
+        }
+        case 8: 
+        {
+            if (d.boss >= 1)
+            {
+                cout << "Chegou no hall da sala do rei \n";
+                system("pause");
+                system("cls");
+                cout << "De repente ele levanta e a batalha inicia\n";
+                system("pause");
+                system("cls");
+                lutaBoss(b, f, h, d);
+            }
+            else if (d.boss < 1)
+            {
+                system("cls");
+                cout << "Parece que vocÃª eliminou todos os inimigos desse mapa\n";
+                system("pause");
+                system("cls");
+            }
+            break;
         }
     }
 }
