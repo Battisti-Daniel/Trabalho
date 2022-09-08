@@ -11,33 +11,30 @@ int main() {
     defaultOptions d;
     features f;
     mob m;
-    urso u;
     treante t;
     boss b;
     ladino l;
     mimico mi;
     heroAction h;
+    urso u;
     setlocale(LC_ALL, "Portuguese");
+    while (!d.start)
+    {
+        option(d);
+    }
 
-    option(d);
     //inicia um novo jogo automatico caso o usuario nao tenha salvo nenhum jogo anteriormente.
-    if(!d.save)
+    if (!d.save)
     {
         intro();
         doFeatures(f, d);
 
     }
-    while (d.live) 
+    while (d.live)
     {
-        //Personagem inicia na taberna
-        d.pos[1] = 1;
+        acao(d, f, h, l, u, t, mi, b);
+        avanca(d);
 
-        if(d.pos[1])
-        {
-            taberna(d, f);
-        }
-        cout << "\nSAIU";
-        system("pause");
     }
     return 0;
 }
